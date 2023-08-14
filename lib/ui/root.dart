@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nike_store/ui/cart/cart.dart';
 import 'package:nike_store/ui/home/home.dart';
 
 
@@ -58,9 +59,7 @@ class _RootScreenState extends State<RootScreen> {
               _navigator(
                   _cartKey,
                   cartIndex,
-                  const Center(
-                    child: Text('Cart'),
-                  )),
+                  const CartScreen()),
               _navigator(
                   _profileKey,
                   profileIndex,

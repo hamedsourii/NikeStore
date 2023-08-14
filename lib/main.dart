@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:nike_store/data/product.dart';
+import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/banner_repository.dart';
 import 'package:nike_store/data/repo/product_repository.dart';
 import 'package:nike_store/theme.dart';
 import 'package:nike_store/ui/auth/auth.dart';
+import 'package:nike_store/ui/root.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  authRepository.loadAuthInfo();
   runApp(const MyApp());
 }
 
@@ -46,7 +50,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const Directionality(
           textDirection: TextDirection.rtl,
-          child: AuthScreen()),
+          child: RootScreen()),
     );
   }
 }
