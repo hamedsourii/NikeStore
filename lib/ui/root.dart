@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/ui/cart/cart.dart';
 import 'package:nike_store/ui/home/home.dart';
 
@@ -63,9 +64,16 @@ class _RootScreenState extends State<RootScreen> {
               _navigator(
                   _profileKey,
                   profileIndex,
-                  const Center(
-                    child: Text('Profile'),
-                  )),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    const Text('Profile'),
+                    ElevatedButton(onPressed: (){
+                      authRepository.signOut();
+                    }, child: const Text('Sign Out'))
+
+
+                  ],),),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(

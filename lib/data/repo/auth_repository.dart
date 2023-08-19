@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:nike_store/common/http_client.dart';
-
 import 'package:nike_store/data/auth_info.dart';
 import 'package:nike_store/data/source/auth_data_source.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 final authRepository = AuthRepository(AuthRemoteDataSource(
@@ -17,10 +17,13 @@ abstract class IAuthRepository {
 }
 
 class AuthRepository implements IAuthRepository {
-  static final ValueNotifier<AuthInfo?> authChangeNotifier = ValueNotifier(null);
+  static final ValueNotifier<AuthInfo?> authChangeNotifier =
+      ValueNotifier(null);
   final IAuthDataSource dataSource;
 
-  AuthRepository(this.dataSource,);
+  AuthRepository(
+    this.dataSource,
+  );
   @override
   Future<void> login(String username, String password) async {
     final AuthInfo authInfo = await dataSource.login(username, password);

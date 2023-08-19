@@ -4,9 +4,7 @@ import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/banner_repository.dart';
 import 'package:nike_store/data/repo/product_repository.dart';
 import 'package:nike_store/theme.dart';
-import 'package:nike_store/ui/auth/auth.dart';
 import 'package:nike_store/ui/root.dart';
-
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,21 +25,30 @@ class MyApp extends StatelessWidget {
     });
     bannerRepository.getAll().then((value) {
       debugPrint(value.toString());
-    }).catchError((e){
+    }).catchError((e) {
       debugPrint(e.toString());
     });
     const defaultTextStyle = TextStyle(
         fontFamily: 'BNaznnBd', color: LightThemeColor.primaryTextColor);
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            foregroundColor: LightThemeColor.primaryTextColor,
+            elevation: 0),
+        snackBarTheme: SnackBarThemeData(
+            contentTextStyle: defaultTextStyle.apply(color: Colors.white)),
         textTheme: TextTheme(
-          subtitle1: defaultTextStyle.apply(color: LightThemeColor.secondaryTextColor),
+            subtitle1: defaultTextStyle.apply(
+                color: LightThemeColor.secondaryTextColor),
             bodyText2: defaultTextStyle,
             button: defaultTextStyle,
             caption: defaultTextStyle.apply(
                 color: LightThemeColor.secondaryTextColor),
-            headline6: defaultTextStyle.copyWith(fontWeight: FontWeight.bold,fontSize: 18)),
+            headline6: defaultTextStyle.copyWith(
+                fontWeight: FontWeight.bold, fontSize: 18)),
         colorScheme: const ColorScheme.light(
           primary: LightThemeColor.primaryColor,
           secondary: LightThemeColor.secondaryColor,
@@ -49,9 +56,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const Directionality(
-          textDirection: TextDirection.rtl,
-          child: RootScreen()),
+          textDirection: TextDirection.rtl, child: RootScreen()),
     );
   }
 }
-
