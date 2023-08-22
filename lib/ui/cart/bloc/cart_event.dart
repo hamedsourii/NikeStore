@@ -1,30 +1,48 @@
 part of 'cart_bloc.dart';
 
-sealed class CartEvent extends Equatable {
+abstract class CartEvent extends Equatable {
   const CartEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class CartStarted extends CartEvent{
+class CartStarted extends CartEvent {
   final AuthInfo? authInfo;
+  final bool isRefreshing;
 
-  const CartStarted(this.authInfo);
+  const CartStarted(this.authInfo, {this.isRefreshing = false});
 }
-class CartDeleteButton extends CartEvent{
 
+class CartDeleteButtonClicked extends CartEvent {
   final int cartItemId;
 
-  const CartDeleteButton(this.cartItemId);
-   @override
-  
+  const CartDeleteButtonClicked(this.cartItemId);
+
+  @override
   List<Object> get props => [cartItemId];
 }
 
-class CartAuthInfoChanged extends CartEvent{
+class CartAuthInfoChanged extends CartEvent {
   final AuthInfo? authInfo;
 
   const CartAuthInfoChanged(this.authInfo);
+}
 
+class CartIncreaseCountButtonClicked extends CartEvent {
+  final int cartItemId;
+
+  const CartIncreaseCountButtonClicked(this.cartItemId);
+
+  @override
+  List<Object> get props => [cartItemId];
+}
+
+class CartDecreaseCountButtonClicked extends CartEvent {
+  final int cartItemId;
+
+  const CartDecreaseCountButtonClicked(this.cartItemId);
+
+  @override
+  List<Object> get props => [cartItemId];
 }

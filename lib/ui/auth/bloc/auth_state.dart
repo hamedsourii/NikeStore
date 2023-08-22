@@ -14,7 +14,7 @@ class AuthInitial extends AuthState {
 }
 
 class AuthError extends AuthState {
-  final AppExeption exception;
+  final AppException exception;
   const AuthError(bool isLoginMode, this.exception) : super(isLoginMode);
 }
 
@@ -26,3 +26,4 @@ class AuthLoading extends AuthState{
 class AuthSuccess extends AuthState {
   const AuthSuccess(bool isLoginMode) : super(isLoginMode);
 }
+

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:nike_store/common/utils.dart';
 import 'package:nike_store/data/banner.dart';
 import 'package:nike_store/ui/widgets/image.dart';
+
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class BannerSlider extends StatelessWidget {
   final PageController _controller = PageController();
   final List<BannerEntity> banners;
-  BannerSlider({super.key, required this.banners});
+  BannerSlider({Key? key, required this.banners}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +18,10 @@ class BannerSlider extends StatelessWidget {
         children: [
           PageView.builder(
             controller: _controller,
-              itemCount: banners.length,
-              physics: defaultScrollPhisics,
-              itemBuilder: (context, index) => _Slide(banner: banners[index])),
+            itemCount: banners.length,
+            physics: defaultScrollPhysics,
+            itemBuilder: (context, index) => _Slide(banner: banners[index]),
+          ),
           Positioned(
             left: 0,
             right: 0,
@@ -32,15 +34,14 @@ class BannerSlider extends StatelessWidget {
                 effect: WormEffect(
                     spacing: 4.0,
                     radius: 4.0,
-                    dotWidth: 18.0,
-                    dotHeight: 3.0,
+                    dotWidth: 20.0,
+                    dotHeight: 2.0,
                     paintStyle: PaintingStyle.fill,
-                    strokeWidth: 1.5,
                     dotColor: Colors.grey.shade400,
                     activeDotColor: Theme.of(context).colorScheme.onBackground),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -49,7 +50,10 @@ class BannerSlider extends StatelessWidget {
 
 class _Slide extends StatelessWidget {
   final BannerEntity banner;
-  const _Slide({super.key, required this.banner});
+  const _Slide({
+    Key? key,
+    required this.banner,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

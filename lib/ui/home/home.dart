@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_store/common/utils.dart';
 import 'package:nike_store/data/product.dart';
@@ -9,6 +11,7 @@ import 'package:nike_store/ui/product/product.dart';
 import 'package:nike_store/ui/widgets/error.dart';
 import 'package:nike_store/ui/widgets/slider.dart';
 
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -18,7 +21,7 @@ class HomeScreen extends StatelessWidget {
       create: (context) {
         final homeBloc = HomeBloc(
             bannerRepository: bannerRepository,
-            productRepository: productrepository);
+            productRepository: productRepository);
         homeBloc.add(HomeStarted());
         return homeBloc;
       },
@@ -27,7 +30,7 @@ class HomeScreen extends StatelessWidget {
           child: BlocBuilder<HomeBloc, HomeState>(builder: ((context, state) {
             if (state is HomeSuccess) {
               return ListView.builder(
-                  //  physics: defaultScrollPhisics,
+                  physics: defaultScrollPhysics,
                   itemCount: 5,
                   itemBuilder: (context, index) {
                     switch (index) {
@@ -46,18 +49,17 @@ class HomeScreen extends StatelessWidget {
                           banners: state.banners,
                         );
                       case 3:
-                        return _HorizantalProductList(
-                          title: 'جدید ترین',
-                          ontap: () {},
+                        return _HorizontalProductList(
+                          title: 'جدیدترین',
+                          onTap: () {},
                           products: state.latestProducts,
                         );
                       case 4:
-                        return _HorizantalProductList(
+                        return _HorizontalProductList(
                           title: 'پربازدیدترین',
-                          ontap: () {},
-                          products: state.latestProducts,
+                          onTap: () {},
+                          products: state.popularProducts,
                         );
-
                       default:
                         return Container();
                     }
@@ -66,7 +68,7 @@ class HomeScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is HomeError) {
               return AppErrorWidget(
-                exeption: state.exeption,
+                exception: state.exception,
                 onPressed: () {
                   BlocProvider.of<HomeBloc>(context).add(HomeRefresh());
                 },
@@ -83,15 +85,16 @@ class HomeScreen extends StatelessWidget {
 
 
 
-class _HorizantalProductList extends StatelessWidget {
+class _HorizontalProductList extends StatelessWidget {
   final String title;
-  final GestureTapCallback ontap;
+  final GestureTapCallback onTap;
   final List<ProductEntity> products;
-  const _HorizantalProductList(
-      {super.key,
-      required this.title,
-      required this.ontap,
-      required this.products});
+  const _HorizontalProductList({
+    Key? key,
+    required this.title,
+    required this.onTap,
+    required this.products,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -103,25 +106,24 @@ class _HorizantalProductList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: Theme.of(context).textTheme.subtitle1),
-              TextButton(onPressed: ontap, child: const Text('مشاهده همه'))
+              TextButton(onPressed: onTap, child: const Text('مشاهده همه'))
             ],
           ),
         ),
         SizedBox(
           height: 290,
           child: ListView.builder(
-            physics: defaultScrollPhisics,
-            itemCount: products.length,
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(left: 8, right: 8),
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return ProductItem(
-                product: product,
-                borderRadius: BorderRadius.circular(12),
-              );
-            },
-          ),
+              physics: defaultScrollPhysics,
+              itemCount: products.length,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              itemBuilder: ((context, index) {
+                final product = products[index];
+                return ProductItem(
+                  product: product,
+                  borderRadius: BorderRadius.circular(12),
+                );
+              })),
         )
       ],
     );

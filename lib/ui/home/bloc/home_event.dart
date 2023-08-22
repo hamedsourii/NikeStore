@@ -1,6 +1,6 @@
 part of 'home_bloc.dart';
 
-sealed class HomeEvent extends Equatable {
+abstract class HomeEvent extends Equatable {
   const HomeEvent();
 
   @override
@@ -8,7 +8,7 @@ sealed class HomeEvent extends Equatable {
 }
 
 class HomeStarted extends HomeEvent{
-  
+
 }
 
 class HomeRefresh extends HomeEvent{

@@ -1,45 +1,39 @@
+import 'package:flutter/material.dart';
 import 'package:nike_store/common/http_client.dart';
-
 import 'package:nike_store/data/add_to_cart_response.dart';
 import 'package:nike_store/data/cart_response.dart';
 import 'package:nike_store/data/source/cart_data_sourse.dart';
 
+
 final cartRepository = CartRepository(CartRemoteDataSource(httpClient));
 
-abstract class ICartRepository extends ICartDataSourse {}
+abstract class ICartRepository extends ICartDataSource {}
 
+class CartRepository implements ICartRepository {
+  final ICartDataSource dataSource;
+  static ValueNotifier<int> cartItemCountNotifier = ValueNotifier(0);
 
-class CartRepository implements ICartRepository{
-
-  final ICartDataSourse dataSourse;
-
-  CartRepository(this.dataSourse);
+  CartRepository(this.dataSource);
   @override
-  Future<AddToCartResponse> add(int product_id) {
-    return dataSourse.add(product_id);
-  }
+  Future<AddToCartResponse> add(int productId) => dataSource.add(productId);
 
   @override
   Future<AddToCartResponse> changeCount(int cartItemId, int count) {
-    // TODO: implement count
-    throw UnimplementedError();
+    return dataSource.changeCount(cartItemId, count);
   }
 
   @override
-  Future<int> count() {
-    // TODO: implement count
-    throw UnimplementedError();
+  Future<int> count() async {
+    final count = await dataSource.count();
+    cartItemCountNotifier.value = count;
+    return count;
   }
 
   @override
   Future<void> delete(int cartItemId) {
-    // TODO: implement delete
-    throw UnimplementedError();
+    return dataSource.delete(cartItemId);
   }
 
   @override
-  Future<CartResponse> getAll() {
-    return dataSourse.getAll();
-  }
-
+  Future<CartResponse> getAll() => dataSource.getAll();
 }

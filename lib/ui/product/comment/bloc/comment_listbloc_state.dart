@@ -19,7 +19,7 @@ class CommentListSuccess extends CommentListblocState {
 }
 
 class CommentListError extends CommentListblocState {
-  final AppExeption exeption;
+  final AppException exeption;
 
   const CommentListError(this.exeption);
 

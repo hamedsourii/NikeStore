@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:nike_store/data/banner.dart';
 import 'package:nike_store/data/common/http_response_validator.dart';
 
+
 abstract class IBannerDataSource {
   Future<List<BannerEntity>> getAll();
 }
@@ -16,11 +17,10 @@ class BannerRemoteDataSource
   Future<List<BannerEntity>> getAll() async {
     final response = await httpClient.get('banner/slider');
     validateResponse(response);
-
     final List<BannerEntity> banners = [];
-    for (var jsonObject in (response.data as List)) {
+    (response.data as List).forEach((jsonObject) {
       banners.add(BannerEntity.fromJson(jsonObject));
-    }
+    });
     return banners;
   }
 }

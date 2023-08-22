@@ -1,9 +1,13 @@
+
+
 import 'package:nike_store/data/product.dart';
 
 class CartItemEntity {
   final ProductEntity product;
   final int id;
-  final int count;
+  int count;
+  bool deleteButtonLoading = false;
+  bool changeCountLoading = false;
 
   CartItemEntity.fromJson(Map<String, dynamic> json)
       : product = ProductEntity.fromJson(json['product']),
@@ -11,10 +15,10 @@ class CartItemEntity {
         count = json['count'];
 
   static List<CartItemEntity> parseJsonArray(List<dynamic> jsonArray) {
-    final List<CartItemEntity> cartItem = [];
+    final List<CartItemEntity> cartItems = [];
     jsonArray.forEach((element) {
-      cartItem.add(CartItemEntity.fromJson(element));
+      cartItems.add(CartItemEntity.fromJson(element));
     });
-    return cartItem;
+    return cartItems;
   }
 }

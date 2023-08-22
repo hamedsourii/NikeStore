@@ -12,3 +12,4 @@ class CommentEntity {
         date = json['date'],
         email = json['author']['email'];
 }
+

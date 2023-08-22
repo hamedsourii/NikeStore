@@ -37,7 +37,7 @@ class CommentList extends StatelessWidget {
           } else if (state is CommentListError) {
             return SliverToBoxAdapter(
               child: AppErrorWidget(
-                  exeption: state.exeption,
+                  exception: state.exeption,
                   onPressed: () {
                     BlocProvider.of<CommentListBloc>(context)
                         .add(CommentListStarted());

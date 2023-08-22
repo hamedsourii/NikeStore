@@ -81,7 +81,12 @@ class _RootScreenState extends State<RootScreen> {
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.home), label: 'خانه'),
               BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.cart), label: 'سبد خرید'),
+                  icon: Stack(
+                    children: [
+                      Icon(CupertinoIcons.cart),
+                      
+                    ],
+                  ), label: 'سبد خرید'),
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.person), label: 'پروفایل'),
             ],

@@ -3,4 +3,5 @@ class AuthInfo{
   final String refreshToken;
 
   AuthInfo(this.accessToken, this.refreshToken);
+
 }

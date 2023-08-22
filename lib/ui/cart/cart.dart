@@ -1,15 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nike_store/common/utils.dart';
-
+import 'package:flutter_svg/svg.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/cart_repository.dart';
 import 'package:nike_store/ui/auth/auth.dart';
 import 'package:nike_store/ui/cart/bloc/cart_bloc.dart';
+import 'package:nike_store/ui/cart/cart_item.dart';
+import 'package:nike_store/ui/cart/price_info.dart';
+import 'package:nike_store/ui/shipping/shipphing.dart';
 import 'package:nike_store/ui/widgets/empty_state.dart';
-import 'package:nike_store/ui/widgets/image.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -19,7 +22,10 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-   CartBloc? cartBloc;
+  CartBloc? cartBloc;
+  StreamSubscription? stateStreamSubscription;
+  final RefreshController _refreshController = RefreshController();
+  bool stateIsSuccess = false;
   @override
   void initState() {
     super.initState();
@@ -35,19 +41,56 @@ class _CartScreenState extends State<CartScreen> {
     AuthRepository.authChangeNotifier
         .removeListener(authChangeNotifierListener);
     cartBloc?.close();
+    stateStreamSubscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
         appBar: AppBar(
           centerTitle: true,
           title: const Text("سبد خرید"),
         ),
+        floatingActionButton: Visibility(
+          visible: stateIsSuccess,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.only(left: 48, right: 48),
+            child: FloatingActionButton.extended(
+                onPressed: () {
+                  final state = cartBloc!.state;
+
+                  if (state is CartSuccess) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ShippingScreen(
+                              payablePrice: state.cartResponse.payablePrice,
+                              totalPrice: state.cartResponse.totalPrice,
+                              shippingCost: state.cartResponse.shippingCost,
+                            )));
+                  }
+                },
+                label: const Text('پرداخت')),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         body: BlocProvider<CartBloc>(
           create: (context) {
             final bloc = CartBloc(cartRepository);
+            stateStreamSubscription = bloc.stream.listen((state) {
+              setState(() {
+                stateIsSuccess = state is CartSuccess;
+              });
+
+              if (_refreshController.isRefresh) {
+                if (state is CartSuccess) {
+                  _refreshController.refreshCompleted();
+                } else if (state is CartError) {
+                  _refreshController.refreshFailed();
+                }
+              }
+            });
             cartBloc = bloc;
             bloc.add(CartStarted(AuthRepository.authChangeNotifier.value));
             return bloc;
@@ -60,112 +103,83 @@ class _CartScreenState extends State<CartScreen> {
                 );
               } else if (state is CartError) {
                 return Center(
-                  child: Text(state.exeption.message),
+                  child: Text(state.exception.message),
                 );
               } else if (state is CartSuccess) {
-                return ListView.builder(
-                  itemBuilder: (context, index) {
-                    final data = state.cartResponse.cartItem[index];
-                    return Container(
-                      margin: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                            )
-                          ]),
-                      child: Column(children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 100,
-                                height: 100,
-                                child: ImageLoadingService(
-                                  imageUrl: data.product.imageUrl,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    data.product.title,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text('تعداد '),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                            CupertinoIcons.plus_rectangle),
-                                      ),
-                                      Text(
-                                        data.count.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6,
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                            CupertinoIcons.minus_rectangle),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    data.product.previousPrice.withPriceLabel,
-                                    style: const TextStyle(
-                                        decoration: TextDecoration.lineThrough),
-                                  ),
-                                  Text(data.product.price.withPriceLabel),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text('حذف از سبد خرید'),
-                        ),
-                      ]),
-                    );
+                return SmartRefresher(
+                  controller: _refreshController,
+                  header: const ClassicHeader(
+                    completeText: 'با موفقیت انجام شد',
+                    refreshingText: 'در حال به روزرسانی',
+                    idleText: 'برای به روزرسانی پایین بکشید',
+                    releaseText: 'رها کنید',
+                    failedText: 'خطای نامشخص',
+                    spacing: 2,
+                    completeIcon: Icon(
+                      CupertinoIcons.checkmark_circle,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
+                  ),
+                  onRefresh: () {
+                    cartBloc?.add(CartStarted(
+                        AuthRepository.authChangeNotifier.value,
+                        isRefreshing: true));
                   },
-                  itemCount: state.cartResponse.cartItem.length,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 80),
+                    itemBuilder: (context, index) {
+                      if (index < state.cartResponse.cartItems.length) {
+                        final data = state.cartResponse.cartItems[index];
+                        return CartItem(
+                          data: data,
+                          onDeleteButtonClick: () {
+                            cartBloc?.add(CartDeleteButtonClicked(data.id));
+                          },
+                          onDecreaseButtonClick: () {
+                            if (data.count > 1) {
+                              cartBloc?.add(
+                                  CartDecreaseCountButtonClicked(data.id));
+                            }
+                          },
+                          onIncreaseButtonClick: () {
+                            cartBloc
+                                ?.add(CartIncreaseCountButtonClicked(data.id));
+                          },
+                        );
+                      } else {
+                        return PriceInfo(
+                          payablePrice: state.cartResponse.payablePrice,
+                          totalPrice: state.cartResponse.totalPrice,
+                          shippingCost: state.cartResponse.shippingCost,
+                        );
+                      }
+                    },
+                    itemCount: state.cartResponse.cartItems.length + 1,
+                  ),
                 );
               } else if (state is CartAuthRequired) {
-                return EpmtyView(message: 'برای مشاهده سبد خرید ابتدا وارد حساب کاربری خود شوید', callToAction:  ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const AuthScreen()));
-                          },
-                          child: const Text('ورود به حساب کاربری')), image: SvgPicture.asset('assets/img/auth_required.svg',width: 140,));
+                return EmptyView(
+                    message:
+                        'برای مشاهده ی سبد خرید ابتدا وارد حساب کاربری خود شوید',
+                    callToAction: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const AuthScreen()));
+                        },
+                        child: const Text('ورود به حساب کاربری')),
+                    image: SvgPicture.asset(
+                      'assets/img/auth_required.svg',
+                      width: 140,
+                    ));
+              } else if (state is CartEmpty) {
+                return EmptyView(
+                    message:
+                        'تاکنون هیچ محصولی به سبد خرید خود اضافه نکرده اید',
+                    image: SvgPicture.asset(
+                      'assets/img/empty_cart.svg',
+                      width: 200,
+                    ));
               } else {
                 throw Exception('current cart state is not valid');
               }
@@ -173,7 +187,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
         )
 
-        // body: ValueListenableBuilder<AuthInfo?>(
+        // ValueListenableBuilder<AuthInfo?>(
         //   valueListenable: AuthRepository.authChangeNotifier,
         //   builder: (context, authState, child) {
         //     bool isAuthenticated =

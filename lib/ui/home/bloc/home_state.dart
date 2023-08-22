@@ -1,6 +1,6 @@
 part of 'home_bloc.dart';
 
-sealed class HomeState extends Equatable {
+abstract class HomeState extends Equatable {
   const HomeState();
 
   @override
@@ -10,12 +10,11 @@ sealed class HomeState extends Equatable {
 class HomeLoading extends HomeState {}
 
 class HomeError extends HomeState {
-  final AppExeption exeption;
-
-  const HomeError({required this.exeption});
+  final AppException exception;
+  const HomeError({required this.exception});
 
   @override
-  List<Object> get props => [exeption];
+  List<Object> get props => [exception];
 }
 
 class HomeSuccess extends HomeState{
@@ -23,6 +22,7 @@ class HomeSuccess extends HomeState{
   final List<ProductEntity> latestProducts;
   final List<ProductEntity> popularProducts;
 
-  const HomeSuccess(this.banners, this.latestProducts, this.popularProducts);
-  
+  const HomeSuccess({required this.banners,required this.latestProducts,required this.popularProducts});
+
+
 }

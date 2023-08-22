@@ -2,13 +2,18 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nike_store/common/exeptions.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
+import 'package:nike_store/data/repo/cart_repository.dart';
+
+
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final IAuthRepository authRepository;
+  final CartRepository cartRepository;
   bool isLoginMode;
-  AuthBloc(this.authRepository, {this.isLoginMode = true})
+  AuthBloc(this.authRepository,
+      {required this.cartRepository, this.isLoginMode = true})
       : super(AuthInitial(isLoginMode)) {
     on<AuthEvent>((event, emit) async {
       try {
@@ -16,6 +21,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthLoading(isLoginMode));
           if (isLoginMode) {
             await authRepository.login(event.username, event.password);
+            await cartRepository.count();
             emit(AuthSuccess(isLoginMode));
           } else {
             await authRepository.signUp(event.username, event.password);
@@ -26,7 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthInitial(isLoginMode));
         }
       } catch (e) {
-        emit(AuthError(isLoginMode, AppExeption()));
+        emit(AuthError(isLoginMode, AppException()));
       }
     });
   }

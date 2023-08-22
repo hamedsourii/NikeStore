@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:nike_store/common/exeptions.dart';
 
+
 class AppErrorWidget extends StatelessWidget {
-  final AppExeption exeption;
+  final AppException exception;
   final GestureTapCallback onPressed;
   const AppErrorWidget({
-    super.key,
-    required this.exeption,
+    Key? key,
+    required this.exception,
     required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class AppErrorWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(exeption.message),
+          Text(exception.message),
           ElevatedButton(
               onPressed: onPressed, child: const Text('تلاش دوباره')),
         ],

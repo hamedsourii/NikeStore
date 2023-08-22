@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-class EpmtyView extends StatelessWidget{
+class EmptyView extends StatelessWidget {
   final String message;
-  final Widget callToAction;
+  final Widget? callToAction;
   final Widget image;
 
-  const EpmtyView({super.key, required this.message, required this.callToAction, required this.image});
-  
+  const EmptyView(
+      {Key? key, required this.message, this.callToAction, required this.image})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -15,13 +17,15 @@ class EpmtyView extends StatelessWidget{
       children: [
         image,
         Padding(
-          padding: const EdgeInsets.only(left: 32,right: 32,top: 24,bottom: 16),
+          padding:
+              const EdgeInsets.only(left: 48, right: 48, top: 24, bottom: 16),
           child: Text(
-            message,style: Theme.of(context).textTheme.headline6,
+            message,
+            style: Theme.of(context).textTheme.headline6!.copyWith(height: 1.3),
             textAlign: TextAlign.center,
-            ),
+          ),
         ),
-        callToAction
+        if (callToAction != null) callToAction!
       ],
     );
   }
