@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +9,7 @@ import 'package:nike_store/theme.dart';
 import 'package:nike_store/ui/product/bloc/product_bloc.dart';
 import 'package:nike_store/ui/product/comment/comment_list.dart';
 import 'package:nike_store/ui/widgets/image.dart';
+
 
 
 class ProductDetailScreen extends StatefulWidget {
@@ -76,7 +76,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               slivers: [
                 SliverAppBar(
                   expandedHeight: MediaQuery.of(context).size.width * 0.8,
-                //  flexibleSpace: ImageLoadingService(imageUrl: widget.product.imageUrl),
+                  flexibleSpace: ImageLoadingService(imageUrl: widget.product.imageUrl),
                   foregroundColor: LightThemeColor.primaryTextColor,
                   actions: [
                     IconButton(

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class ImageLoadingService extends StatelessWidget {
   final String imageUrl;
-  final BorderRadius borderRadius;
+  final BorderRadius? borderRadius;
     ImageLoadingService(
-      {super.key, required this.imageUrl,required this.borderRadius});
+      {super.key, required this.imageUrl, this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class ImageLoadingService extends StatelessWidget {
       fit: BoxFit.cover,
     );
     if (borderRadius != null) {
-      return ClipRRect(borderRadius: borderRadius,child: image,);
+      return ClipRRect(borderRadius: borderRadius!,child: image,);
     } else {
       return image;
     }

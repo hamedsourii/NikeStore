@@ -16,6 +16,8 @@ class AuthRemoteDataSource
   final Dio httpClient;
 
   AuthRemoteDataSource(this.httpClient);
+  
+  
   @override
   Future<AuthInfo> login(String username, String password) async {
     final response = await httpClient.post("auth/token", data: {
@@ -29,7 +31,7 @@ class AuthRemoteDataSource
     validateResponse(response);
 
     return AuthInfo(
-        response.data["access_token"], response.data["refresh_token"]);
+        response.data["access_token"], response.data["refresh_token"],username);
   }
 
   @override
@@ -44,7 +46,7 @@ class AuthRemoteDataSource
     validateResponse(response);
 
     return AuthInfo(
-        response.data["access_token"], response.data["refresh_token"]);
+        response.data["access_token"], response.data["refresh_token"],'');
   }
 
   @override

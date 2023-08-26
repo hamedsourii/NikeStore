@@ -7,10 +7,10 @@ import 'package:nike_store/data/product.dart';
 import 'package:nike_store/data/repo/banner_repository.dart';
 import 'package:nike_store/data/repo/product_repository.dart';
 import 'package:nike_store/ui/home/bloc/home_bloc.dart';
+import 'package:nike_store/ui/list/list.dart';
 import 'package:nike_store/ui/product/product.dart';
 import 'package:nike_store/ui/widgets/error.dart';
 import 'package:nike_store/ui/widgets/slider.dart';
-
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -51,13 +51,23 @@ class HomeScreen extends StatelessWidget {
                       case 3:
                         return _HorizontalProductList(
                           title: 'جدیدترین',
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const ProductListScreen(
+                                      sort: ProductSort.latest,
+                                    )));
+                          },
                           products: state.latestProducts,
                         );
                       case 4:
                         return _HorizontalProductList(
                           title: 'پربازدیدترین',
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const ProductListScreen(
+                                      sort: ProductSort.popular,
+                                    )));
+                          },
                           products: state.popularProducts,
                         );
                       default:
@@ -82,8 +92,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-
 
 class _HorizontalProductList extends StatelessWidget {
   final String title;

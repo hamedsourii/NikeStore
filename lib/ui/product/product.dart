@@ -5,34 +5,39 @@ import 'package:nike_store/data/product.dart';
 import 'package:nike_store/ui/product/details.dart';
 import 'package:nike_store/ui/widgets/image.dart';
 
-
 class ProductItem extends StatelessWidget {
   const ProductItem({
     Key? key,
     required this.product,
     required this.borderRadius,
+    this.itemWidth = 176,
+    this.itemHeight = 189,
   }) : super(key: key);
 
   final ProductEntity product;
   final BorderRadius borderRadius;
+
+  final double itemWidth;
+  final double itemHeight;
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(4.0),
         child: InkWell(
           borderRadius: borderRadius,
-          onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => ProductDetailScreen(product: product,))),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ProductDetailScreen(
+                    product: product,
+                  ))),
           child: SizedBox(
-            width: 176,
+            width: itemWidth,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Stack(
                   children: [
-                    SizedBox(
-                      width: 176,
-                      height: 189,
+                    AspectRatio(
+                      aspectRatio: 0.93,
                       child: ImageLoadingService(
                         imageUrl: product.imageUrl,
                         borderRadius: borderRadius,
@@ -59,7 +64,7 @@ class ProductItem extends StatelessWidget {
                   child: Text(
                     product.title,
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    
                   ),
                 ),
                 Padding(
